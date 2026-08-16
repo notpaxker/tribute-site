@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For My Sister, My Friend, My Caretaker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  
+
+  :root{
+    --paper: #F3ECDC;
+    --paper-deep: #EAE0C8;
+    --ink: #2E2A25;
+    --ink-soft: #55503f;
+    --rose: #C97B84;
+    --rose-deep: #a85b64;
+    --sage: #6B7A5E;
+    --gold: #B8925A;
+    --card: #FFFBF3;
+    --shadow: rgba(46, 42, 37, 0.18);
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin:0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Source Serif 4", Georgia, serif;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(184,146,90,0.06), transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(107,122,94,0.06), transparent 40%);
+  }
+
+  h1,h2,h3{ font-family:"Fraunces", serif; font-weight:600; margin:0; }
+  .script{ font-family:"Caveat", cursive; }
+
+  a{ color: var(--rose-deep); }
+
+  ::selection{ background: var(--rose); color: #fff; }
+
+  /* subtle paper grain */
+  .grain{
+    position: fixed; inset:0; pointer-events:none; z-index: 9999;
+    opacity: 0.05; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ---------- Skip link / focus ---------- */
+  .skip-link{
+    position:absolute; left:-999px; top:0; background:var(--ink); color:var(--paper);
+    padding:.6rem 1rem; z-index:10000;
+  }
+  .skip-link:focus{ left: 1rem; top: 1rem; }
+  a:focus-visible, button:focus-visible{
+    outline: 3px solid var(--sage); outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior:auto !important; }
+  }
+
+  /* ============================================================
+     HERO — the envelope opening
+     ============================================================ */
+  .hero{
+    min-height: 100svh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding: 2rem 1.25rem;
+    position: relative;
+  }
+
+  .hero-eyebrow{
+    font-family:"Caveat", cursive;
+    font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+    color: var(--rose-deep);
+    margin-bottom: .25rem;
+  }
+
+  .envelope{
+    width: min(360px, 84vw);
+    aspect-ratio: 3/2;
+    position: relative;
+    cursor: pointer;
+    margin: 1.5rem 0 2rem;
+    filter: drop-shadow(0 18px 30px var(--shadow));
+  }
+  .envelope-body{
+    position:absolute; inset:0;
+    background: var(--card);
+    border: 1px solid rgba(46,42,37,0.15);
+    border-radius: 6px;
+  }
+  .envelope-flap{
+    position:absolute; top:0; left:0; right:0; height: 55%;
+    background: var(--rose);
+    clip-path: polygon(0 0, 100% 0, 50% 90%);
+    transform-origin: top center;
+    transition: transform 0.7s cubic-bezier(.6,-0.1,.2,1.2);
+    border-radius: 6px 6px 0 0;
+  }
+  .envelope.open .envelope-flap{ transform: rotateX(180deg); }
+  .seal{
+    position:absolute; top:48%; left:50%; transform: translate(-50%,-50%);
+    width: 54px; height:54px; border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, var(--gold), #8a6a3d);
+    display:flex; align-items:center; justify-content:center;
+    font-family:"Fraunces", serif; color:#fff8ec; font-size: 1.4rem;
+    box-shadow: 0 4px 8px var(--shadow);
+    transition: opacity .4s ease, transform .4s ease;
+    z-index: 2;
+  }
+  .envelope.open .seal{ opacity:0; transform: translate(-50%,-50%) scale(0.4); pointer-events:none; }
+
+  .envelope-note{
+    font-family:"Caveat", cursive;
+    color: var(--ink-soft);
+    font-size: 1.1rem;
+    margin-top: .5rem;
+  }
+
+  .hero-reveal{
+    max-width: 640px;
+    opacity: 0; transform: translateY(14px);
+    transition: opacity .8s ease, transform .8s ease;
+  }
+  .hero-reveal.show{ opacity:1; transform:none; }
+
+  .hero-reveal h1{
+    font-size: clamp(2.1rem, 5.5vw, 3.4rem);
+    line-height: 1.15;
+  }
+  .hero-reveal p{
+    color: var(--ink-soft);
+    font-size: 1.15rem;
+    margin-top: .9rem;
+  }
+
+  .scroll-hint{
+    margin-top: 2.5rem;
+    font-family:"Caveat", cursive;
+    color: var(--ink-soft);
+    font-size: 1.1rem;
+    opacity:.8;
+  }
+
+  /* ============================================================
+     SECTION shared styles
+     ============================================================ */
+  section{ padding: clamp(3rem, 8vw, 6rem) 1.25rem; max-width: 1000px; margin: 0 auto; }
+
+  .section-title{
+    text-align:center; margin-bottom: 2.5rem;
+  }
+  .section-title .script{
+    display:block; color: var(--rose-deep); font-size: 1.4rem; margin-bottom:.25rem;
+  }
+  .section-title h2{ font-size: clamp(1.6rem, 4vw, 2.3rem); }
+
+  .divider{
+    width: 60px; height: 2px; background: var(--gold); margin: 1.1rem auto 0; opacity:.6;
+  }
+
+  /* ============================================================
+     GALLERY — corkboard of polaroids
+     ============================================================ */
+  .gallery{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1.6rem 1.2rem;
+    margin-top: 2rem;
+  }
+  .polaroid{
+    background: var(--card);
+    padding: 10px 10px 34px;
+    box-shadow: 0 10px 18px var(--shadow);
+    transform: rotate(var(--r, -2deg));
+    transition: transform .25s ease, box-shadow .25s ease;
+    position: relative;
+  }
+  .polaroid:nth-child(2n){ --r: 2deg; }
+  .polaroid:nth-child(3n){ --r: -3deg; }
+  .polaroid:nth-child(4n){ --r: 1.5deg; }
+  .polaroid:hover, .polaroid:focus-within{
+    transform: rotate(0deg) scale(1.04);
+    box-shadow: 0 16px 26px var(--shadow);
+    z-index: 3;
+  }
+  .polaroid-photo{
+    aspect-ratio: 1/1;
+    background: var(--paper-deep);
+    border: 1px dashed rgba(46,42,37,0.3);
+    display:flex; align-items:center; justify-content:center;
+    color: var(--ink-soft); font-size:.8rem; text-align:center; padding:.4rem;
+    overflow:hidden;
+  }
+  .polaroid-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .polaroid-caption{
+    font-family:"Caveat", cursive;
+    text-align:center; margin-top:.5rem; color: var(--ink-soft); font-size:1.05rem;
+  }
+  .tape{
+    position:absolute; top:-10px; left:50%; transform: translateX(-50%) rotate(-3deg);
+    width: 60px; height:22px;
+    background: rgba(184,146,90,0.55);
+    box-shadow: 0 2px 3px var(--shadow);
+  }
+
+  /* ============================================================
+     LETTER
+     ============================================================ */
+  .letter-wrap{
+    background: var(--card);
+    border-radius: 4px;
+    padding: clamp(1.6rem, 5vw, 3rem);
+    box-shadow: 0 14px 30px var(--shadow);
+    position: relative;
+    line-height: 1.85;
+    font-size: 1.08rem;
+    color: var(--ink);
+  }
+  .letter-wrap::before{
+    content:"";
+    position:absolute; top:0; right:0; width:0; height:0;
+    border-style:solid;
+    border-width: 0 34px 34px 0;
+    border-color: transparent var(--paper) transparent transparent;
+    filter: drop-shadow(-2px 2px 2px var(--shadow));
+  }
+  .letter-wrap p{ margin: 0 0 1.1rem; }
+  .letter-sign{
+    font-family:"Caveat", cursive;
+    font-size: 1.7rem;
+    color: var(--rose-deep);
+    margin-top: 1.5rem;
+  }
+
+  /* ============================================================
+     CLOSING
+     ============================================================ */
+  .closing{
+    text-align:center;
+    padding-bottom: 5rem;
+  }
+  .closing h2{ font-size: clamp(1.7rem, 5vw, 2.6rem); }
+  .closing .script{ font-size: 1.3rem; color: var(--rose-deep); display:block; margin-top:.6rem; }
+
+  .btn{
+    margin-top: 2rem;
+    display:inline-block;
+    background: var(--sage);
+    color: #fbf8ee;
+    border:none;
+    padding: .85rem 1.9rem;
+    border-radius: 999px;
+    font-family: "Source Serif 4", serif;
+    font-size: 1rem;
+    cursor:pointer;
+    box-shadow: 0 8px 18px rgba(107,122,94,0.35);
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .btn:hover{ transform: translateY(-2px); box-shadow: 0 12px 22px rgba(107,122,94,0.45); }
+
+  footer{
+    text-align:center; padding: 2rem 1rem 3rem;
+    font-family:"Caveat", cursive; color: var(--ink-soft); font-size:1.05rem;
+  }
+
+  .confetti-piece{
+    position: fixed; top: -10px; width:8px; height:14px; z-index: 9998;
+    opacity:.9; pointer-events:none;
+  }
+
+  /* ============================================================
+     WISH button + modal
+     ============================================================ */
+  .btn-outline{
+    background: transparent;
+    color: var(--rose-deep);
+    border: 1.5px solid var(--rose-deep);
+    box-shadow: none;
+  }
+  .btn-outline:hover{
+    background: var(--rose-deep);
+    color: #fff8ec;
+    box-shadow: 0 8px 18px var(--shadow);
+  }
+
+  .modal-overlay{
+    position: fixed; inset:0; background: rgba(46,42,37,0.55);
+    display:flex; align-items:center; justify-content:center;
+    padding: 1.25rem; z-index: 10000;
+    opacity:0; pointer-events:none;
+    transition: opacity .3s ease;
+  }
+  .modal-overlay.show{ opacity:1; pointer-events:auto; }
+
+  .modal-box{
+    background: var(--card);
+    border-radius: 6px;
+    max-width: 440px; width:100%;
+    padding: 2rem 1.75rem;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    text-align:center;
+    transform: translateY(10px) scale(0.97);
+    transition: transform .3s ease;
+  }
+  .modal-overlay.show .modal-box{ transform: none; }
+
+  .modal-box h3{ font-size: 1.4rem; margin-bottom:.4rem; }
+  .modal-box p.hint{ color: var(--ink-soft); font-size:.95rem; margin: 0 0 1.2rem; }
+
+  .modal-box textarea{
+    width:100%; min-height: 120px;
+    border: 1px solid rgba(46,42,37,0.25);
+    border-radius: 4px;
+    background: var(--paper);
+    padding: .8rem;
+    font-family: "Source Serif 4", serif;
+    font-size: 1rem;
+    color: var(--ink);
+    resize: vertical;
+  }
+  .modal-box textarea:focus{ outline:2px solid var(--sage); outline-offset:1px; }
+
+  .modal-actions{
+    display:flex; gap: .75rem; justify-content:center; margin-top: 1.3rem; flex-wrap:wrap;
+  }
+  .modal-close{
+    background:none; border:none; color: var(--ink-soft);
+    font-family:"Caveat", cursive; font-size:1.1rem; cursor:pointer;
+    text-decoration: underline;
+  }
+  .wish-status{
+    margin-top: .9rem; font-family:"Caveat", cursive; font-size:1.15rem; color: var(--sage);
+    min-height: 1.4em;
+  }
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to content</a>
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ======================= HERO ======================= -->
+<header class="hero">
+  <span class="hero-eyebrow script">a little something for you</span>
+
+  
+  <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Open the envelope">
+    <div class="envelope-body"></div>
+    <div class="envelope-flap"></div>
+    <div class="seal">✦</div>
+  </div>
+  <p class="envelope-note">(tap the envelope)</p>
+
+  <div class="hero-reveal" id="heroReveal">
+    
+    <h1>For Aduliyaaaa — my teacher, my sister, my friend</h1>
+    <p>Some people teach you a subject. You taught me how to be, How to Behave and You Cared Me like a Brother from my PoV. This is a little collection of everything I never say out loud.</p>
+  </div>
+
+  <p class="scroll-hint">↓ keep scrolling ↓</p>
+</header>
+
+<main id="main">
+
+  <!-- ======================= GALLERY ======================= -->
+  <section aria-labelledby="gallery-heading">
+    <div class="section-title">
+      <span class="script">chapter one</span>
+      <h2 id="gallery-heading">A few of my favorite pictures</h2>
+      <div class="divider"></div>
+    </div>
+
+   
+    <div class="gallery">
+      <div class="polaroid"><div class="tape"></div>
+        <div class="polaroid-photo"><img src="photos/photo1.jpg" alt="Group photo under the trees"></div>
+        <p class="polaroid-caption">Zooo</p>
+      </div>
+      <div class="polaroid"><div class="tape"></div>
+        <div class="polaroid-photo"><img src="photos/photo2.jpg" alt="Classroom group photo"></div>
+        <p class="polaroid-caption">Last day</p>
+      </div>
+      <div class="polaroid"><div class="tape"></div>
+        <div class="polaroid-photo"><img src="photos/photo3.jpg" alt="Classroom group photo"></div>
+        <p class="polaroid-caption">Us..❤️</p>
+      </div>
+      <div class="polaroid"><div class="tape"></div>
+        <div class="polaroid-photo"><img src="photos/photo4.jpg" alt="By the waterfall"></div>
+        <p class="polaroid-caption">akkaaaaa</p>
+      </div>
+      <div class="polaroid"><div class="tape"></div>
+        <div class="polaroid-photo"><img src="photos/photo5.jpg" alt="Looking at the framed photo together"></div>
+        <p class="polaroid-caption">Surpriseeee🎉</p>
+      </div>
+      <div class="polaroid"><div class="tape"></div>
+        <div class="polaroid-photo"><img src="photos/photo6.jpg" alt="By the waterfall, smiling"></div>
+        <p class="polaroid-caption">Akkahhh</p>
+      </div>
+      <div class="polaroid"><div class="tape"></div>
+        <div class="polaroid-photo"><img src="photos/photo7.jpg" alt="Sitting together on a bench"></div>
+        <p class="polaroid-caption">We...😁</p>
+      </div>
+      <div class="polaroid"><div class="tape"></div>
+        <div class="polaroid-photo"><img src="photos/photo8.jpg" alt="Group selfie outdoors"></div>
+        <p class="polaroid-caption">Grade 10 ...</p>
+      </div>
+      <div class="polaroid"><div class="tape"></div>
+        <div class="polaroid-photo"><img src="photos/photo9.jpg" alt="Standing together by a tree"></div>
+        <p class="polaroid-caption">Another New Person who i knew cuz of you..</p>
+      </div>
+      <div class="polaroid"><div class="tape"></div>
+        <div class="polaroid-photo"><img src="photos/photo10.jpg" alt="Group photo on a mural bench"></div>
+        <p class="polaroid-caption">One Last Timee...</p>
+      </div>
+      <div class="polaroid"><div class="tape"></div>
+        <div class="polaroid-photo"><img src="photos/photo11.jpg" alt="Close portrait together"></div>
+        <p class="polaroid-caption">🤍</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= LETTER ======================= -->
+  <section aria-labelledby="letter-heading">
+    <div class="section-title">
+      <span class="script">chapter two</span>
+      <h2 id="letter-heading">A letter, just for you</h2>
+      <div class="divider"></div>
+    </div>
+
+    
+    <div class="letter-wrap">
+      <p>Sweetfull Akkaaaahhhh,</p>
+      <p>I don't think I ever told you what those years actually meant to me. You made me change my behaviour and made me study a bit before you i don't even touch my book but somehow i made here it's all bcz of you..</p>
+      <p>You weren't just my teacher. You showed up like family shows up — without being asked, and without ever making it feel like a big deal.</p>
+      <p>This whole page is my way of finally saying it properly: thank you for every small thing that turned out to be a big thing.</p>
+      <p class="letter-sign">With all my love,<br>— your student, Your Thambiiii , always..🤍🫂🫀</p>
+    </div>
+  </section>
+
+  <!-- ======================= CLOSING ======================= -->
+  <section class="closing">
+    <h2>Thank you for everything.</h2>
+    <span class="script">— My favorite Sister from anothe mother and favourite teacher.. 🤍</span>
+    <div class="modal-actions">
+      <button class="btn" id="confettiBtn" type="button">celebrate</button>
+      <button class="btn btn-outline" id="wishBtn" type="button">make a wish</button>
+    </div>
+  </section>
+
+</main>
+
+<footer>made with love, just for you</footer>
+
+<!-- ======================= WISH MODAL ======================= -->
+<div class="modal-overlay" id="wishOverlay">
+  <div class="modal-box" role="dialog" aria-labelledby="wishTitle" aria-modal="true">
+    <h3 id="wishTitle" class="script">I'm Like an Genie ask me anything i'll put all of my efforts to fulfil it.</h3>
+    <p class="hint">Type it below — it'll come straight to me.</p>
+    <textarea id="wishText" placeholder="Write your wish here..." aria-label="Your wish"></textarea>
+    <div class="modal-actions">
+      <button class="btn" id="sendWishBtn" type="button">send it</button>
+      <button class="modal-close" id="closeWishBtn" type="button">maybe later</button>
+    </div>
+    <p class="wish-status" id="wishStatus" aria-live="polite"></p>
+  </div>
+</div>
+
+<script>
+  // Envelope open interaction
+  const envelope = document.getElementById('envelope');
+  const heroReveal = document.getElementById('heroReveal');
+
+  function openEnvelope(){
+    envelope.classList.add('open');
+    setTimeout(() => heroReveal.classList.add('show'), 350);
+  }
+  envelope.addEventListener('click', openEnvelope);
+  envelope.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openEnvelope(); }
+  });
+
+  // Gentle confetti burst on button click
+  const confettiBtn = document.getElementById('confettiBtn');
+  const colors = ['#C97B84', '#B8925A', '#6B7A5E', '#EAE0C8'];
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  confettiBtn.addEventListener('click', () => {
+    if(reduceMotion) return;
+    for(let i=0; i<40; i++){
+      const piece = document.createElement('div');
+      piece.className = 'confetti-piece';
+      piece.style.left = Math.random()*100 + 'vw';
+      piece.style.background = colors[Math.floor(Math.random()*colors.length)];
+      piece.style.transform = `rotate(${Math.random()*360}deg)`;
+      piece.style.animation = `fall ${2 + Math.random()*1.5}s linear forwards`;
+      document.body.appendChild(piece);
+      setTimeout(() => piece.remove(), 3600);
+    }
+  });
+
+  const styleSheet = document.createElement('style');
+  styleSheet.textContent = `
+    @keyframes fall{
+      to{ transform: translateY(105vh) rotate(360deg); opacity: 0.7; }
+    }`;
+  document.head.appendChild(styleSheet);
+
+  // ============================================================
+  // WISH button — she types something, it comes to you.
+  // ============================================================
+  const YOUR_EMAIL = "wishformeaduliya@zohomail.in";
+
+  const wishOverlay = document.getElementById('wishOverlay');
+  const wishBtn = document.getElementById('wishBtn');
+  const closeWishBtn = document.getElementById('closeWishBtn');
+  const sendWishBtn = document.getElementById('sendWishBtn');
+  const wishText = document.getElementById('wishText');
+  const wishStatus = document.getElementById('wishStatus');
+
+  function openWish(){
+    wishOverlay.classList.add('show');
+    setTimeout(() => wishText.focus(), 150);
+  }
+  function closeWish(){
+    wishOverlay.classList.remove('show');
+    wishStatus.textContent = '';
+  }
+
+  wishBtn.addEventListener('click', openWish);
+  closeWishBtn.addEventListener('click', closeWish);
+  wishOverlay.addEventListener('click', (e) => {
+    if(e.target === wishOverlay) closeWish();
+  });
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape' && wishOverlay.classList.contains('show')) closeWish();
+  });
+
+  sendWishBtn.addEventListener('click', () => {
+    const message = wishText.value.trim();
+    if(!message){
+      wishStatus.textContent = "write something first 🤍";
+      return;
+    }
+    // Opens the visitor's email app with the wish pre-filled, addressed to you.
+    const subject = encodeURIComponent("A wish from your surprise page 🤍");
+    const body = encodeURIComponent(message);
+    window.location.href = `mailto:${YOUR_EMAIL}?subject=${subject}&body=${body}`;
+    wishStatus.textContent = "opening your mail app now...";
+  });
+</script>
+
+</body>
+</html>
