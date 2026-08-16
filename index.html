@@ -11,16 +11,16 @@
   
 
   :root{
-    --paper: #F3ECDC;
-    --paper-deep: #EAE0C8;
-    --ink: #2E2A25;
-    --ink-soft: #55503f;
-    --rose: #C97B84;
-    --rose-deep: #a85b64;
-    --sage: #6B7A5E;
-    --gold: #B8925A;
-    --card: #FFFBF3;
-    --shadow: rgba(46, 42, 37, 0.18);
+    --paper: #1a1a1a;
+    --paper-deep: #0f0f0f;
+    --ink: #f5f5f5;
+    --ink-soft: #d0d0d0;
+    --rose: #ff6b7a;
+    --rose-deep: #ff5567;
+    --sage: #66d9a0;
+    --gold: #ffc857;
+    --card: #2a2a2a;
+    --shadow: rgba(0, 0, 0, 0.4);
   }
 
   *{ box-sizing: border-box; }
@@ -33,8 +33,8 @@
     font-family: "Source Serif 4", Georgia, serif;
     overflow-x: hidden;
     background-image:
-      radial-gradient(circle at 20% 20%, rgba(184,146,90,0.06), transparent 40%),
-      radial-gradient(circle at 80% 70%, rgba(107,122,94,0.06), transparent 40%);
+      radial-gradient(circle at 20% 20%, rgba(255,107,122,0.04), transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(102,217,160,0.04), transparent 40%);
   }
 
   h1,h2,h3{ font-family:"Fraunces", serif; font-weight:600; margin:0; }
@@ -93,7 +93,7 @@
   .envelope-body{
     position:absolute; inset:0;
     background: var(--card);
-    border: 1px solid rgba(46,42,37,0.15);
+    border: 1px solid rgba(245, 245, 245, 0.1);
     border-radius: 6px;
   }
   .envelope-flap{
@@ -194,7 +194,7 @@
   .polaroid-photo{
     aspect-ratio: 1/1;
     background: var(--paper-deep);
-    border: 1px dashed rgba(46,42,37,0.3);
+    border: 1px dashed rgba(245, 245, 245, 0.2);
     display:flex; align-items:center; justify-content:center;
     color: var(--ink-soft); font-size:.8rem; text-align:center; padding:.4rem;
     overflow:hidden;
@@ -207,7 +207,7 @@
   .tape{
     position:absolute; top:-10px; left:50%; transform: translateX(-50%) rotate(-3deg);
     width: 60px; height:22px;
-    background: rgba(184,146,90,0.55);
+    background: rgba(255, 200, 87, 0.3);
     box-shadow: 0 2px 3px var(--shadow);
   }
 
@@ -229,7 +229,7 @@
     position:absolute; top:0; right:0; width:0; height:0;
     border-style:solid;
     border-width: 0 34px 34px 0;
-    border-color: transparent var(--paper) transparent transparent;
+    border-color: transparent var(--card) transparent transparent;
     filter: drop-shadow(-2px 2px 2px var(--shadow));
   }
   .letter-wrap p{ margin: 0 0 1.1rem; }
@@ -292,7 +292,7 @@
   }
 
   .modal-overlay{
-    position: fixed; inset:0; background: rgba(46,42,37,0.55);
+    position: fixed; inset:0; background: rgba(0, 0, 0, 0.7);
     display:flex; align-items:center; justify-content:center;
     padding: 1.25rem; z-index: 10000;
     opacity:0; pointer-events:none;
@@ -317,16 +317,17 @@
 
   .modal-box textarea{
     width:100%; min-height: 120px;
-    border: 1px solid rgba(46,42,37,0.25);
+    border: 1px solid rgba(245, 245, 245, 0.2);
     border-radius: 4px;
-    background: var(--paper);
+    background: #1a1a1a;
+    color: #f5f5f5;
     padding: .8rem;
     font-family: "Source Serif 4", serif;
     font-size: 1rem;
-    color: var(--ink);
     resize: vertical;
   }
   .modal-box textarea:focus{ outline:2px solid var(--sage); outline-offset:1px; }
+  .modal-box textarea::placeholder{ color: #888; }
 
   .modal-actions{
     display:flex; gap: .75rem; justify-content:center; margin-top: 1.3rem; flex-wrap:wrap;
@@ -340,12 +341,76 @@
     margin-top: .9rem; font-family:"Caveat", cursive; font-size:1.15rem; color: var(--sage);
     min-height: 1.4em;
   }
+
+  /* ============================================================
+     LOADING PAGE
+     ============================================================ */
+  .loading-page{
+    position: fixed; inset: 0; background: var(--paper);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    z-index: 5000; padding: 2rem;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+  }
+  .loading-page.hidden{
+    opacity: 0; visibility: hidden;
+  }
+
+  .loading-page h1{
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    color: var(--ink);
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .loading-buttons{
+    display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center;
+  }
+
+  .btn-yes, .btn-no{
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    font-family: "Source Serif 4", serif;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+
+  .btn-yes{
+    background: var(--sage);
+    color: white;
+    box-shadow: 0 8px 18px rgba(102, 217, 160, 0.35);
+  }
+  .btn-yes:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 12px 22px rgba(102, 217, 160, 0.45);
+  }
+
+  .btn-no{
+    background: var(--rose-deep);
+    color: white;
+    box-shadow: 0 8px 18px rgba(255, 85, 103, 0.35);
+  }
+  .btn-no:hover{
+    transform: translateY(-2px);
+  }
 </style>
 </head>
 <body>
 
 <a href="#main" class="skip-link">Skip to content</a>
 <div class="grain" aria-hidden="true"></div>
+
+<!-- ======================= LOADING PAGE ======================= -->
+<div class="loading-page" id="loadingPage">
+  <h1>Ready for the surprise?</h1>
+  <div class="loading-buttons">
+    <button class="btn-yes" id="btnYes" type="button">Yes</button>
+    <button class="btn-no" id="btnNo" type="button">No</button>
+  </div>
+</div>
 
 <!-- ======================= HERO ======================= -->
 <header class="hero">
@@ -474,6 +539,33 @@
 </div>
 
 <script>
+  // ============================================================
+  // LOADING PAGE - Yes/No buttons
+  // ============================================================
+  const loadingPage = document.getElementById('loadingPage');
+  const btnYes = document.getElementById('btnYes');
+  const btnNo = document.getElementById('btnNo');
+
+  // Yes button - hide loading page and show main content
+  btnYes.addEventListener('click', () => {
+    loadingPage.classList.add('hidden');
+  });
+
+  // No button - move away when hovered or on mobile when trying to click
+  btnNo.addEventListener('mouseenter', () => {
+    const randomX = (Math.random() - 0.5) * 300;
+    const randomY = (Math.random() - 0.5) * 300;
+    btnNo.style.transform = `translate(${randomX}px, ${randomY}px)`;
+  });
+
+  // For touch devices - move away on touch attempt
+  btnNo.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    const randomX = (Math.random() - 0.5) * 300;
+    const randomY = (Math.random() - 0.5) * 300;
+    btnNo.style.transform = `translate(${randomX}px, ${randomY}px)`;
+  });
+
   // Envelope open interaction
   const envelope = document.getElementById('envelope');
   const heroReveal = document.getElementById('heroReveal');
